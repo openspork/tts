@@ -5,7 +5,7 @@ datadir = "./instance/data"
 
 # Replace with your own subscription key and region identifier from here: https://aka.ms/speech/sdkregion
 service_region = "eastus"
-with open("./instance/azure_voice.key") as file:
+with open("./instance/azure_speech.key") as file:
     speech_key = file.read().strip()
 
 
