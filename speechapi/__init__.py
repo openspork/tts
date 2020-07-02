@@ -29,7 +29,8 @@ def get_tts(filename, text):
     # Synthesizes the text to speech.
     # Replace with your own text.
     # text = "Hello world!"
-    result = speech_synthesizer.speak_text_async(text).get()
+    #result = speech_synthesizer.speak_text_async(text).get()
+    result = speech_synthesizer.speak_ssml_async(text).get()
 
     result_dict = {"status": None, "path": None}
 
