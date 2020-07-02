@@ -8,8 +8,11 @@ service_region = "eastus"
 with open("./instance/azure_voice.key") as file:
     speech_key = file.read().strip()
 
+
 def get_tts(filename, text):
-    speech_config = speechsdk.SpeechConfig(subscription=speech_key, region=service_region)
+    speech_config = speechsdk.SpeechConfig(
+        subscription=speech_key, region=service_region
+    )
 
     speech_config.set_property(speechsdk.PropertyId.Speech_LogFilename, "log.txt")
 
@@ -18,8 +21,6 @@ def get_tts(filename, text):
     audio_path = path.join(datadir, filename)
     audio_output = speechsdk.audio.AudioOutputConfig(filename=audio_path)
 
-    
-
     # Creates a synthesizer with the given settings
     speech_synthesizer = speechsdk.SpeechSynthesizer(
         speech_config=speech_config, audio_config=audio_output
@@ -27,7 +28,7 @@ def get_tts(filename, text):
 
     # Synthesizes the text to speech.
     # Replace with your own text.
-    #text = "Hello world!"
+    # text = "Hello world!"
     result = speech_synthesizer.speak_text_async(text).get()
 
     result_dict = {"status": None, "path": None}
@@ -47,5 +48,3 @@ def get_tts(filename, text):
 
     print(result_dict)
     return result_dict
-
-

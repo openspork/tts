@@ -11,13 +11,14 @@ from speechapi import *
 app = Flask(__name__)
 
 app.config["SECRET_KEY"] = "secret!"
-app.config['DOWNLOAD_FOLDER'] = path.join(getcwd(),"instance/data")
+app.config["DOWNLOAD_FOLDER"] = path.join(getcwd(), "instance/data")
 socketio = SocketIO(app)
 
 thread = None
 thread_lock = Lock()
 
 filedb = {}
+
 
 def heartbeat_thread():
     count = 0
@@ -39,6 +40,7 @@ def start_heartbeat_thread():
         if thread is None:
             thread = socketio.start_background_task(target=heartbeat_thread)
 
+
 @socketio.on("connect", namespace="/global")
 def test_connect():
     print("Client connected")
@@ -50,6 +52,7 @@ def test_connect():
 def test_disconnect():
     print("Client disconnected")
 
+
 @socketio.on("update", namespace="/global")
 def update(payload):
     print(payload)
@@ -57,26 +60,39 @@ def update(payload):
     filename = payload["filename"]
     text = payload["text"]
     datetime = payload["datetime"]
-    result = get_tts(filename = "%s.wav" % uuid, text = text)
+    result = get_tts(filename="%s.wav" % uuid, text=text)
     status = result["status"]
     # path = result["path"]
     url = "/download/%s" % uuid
     # construct and store in memory
-    data = {"filename": filename, "text": text, "datetime": datetime, "status": status, "url": url}
+    data = {
+        "filename": filename,
+        "text": text,
+        "datetime": datetime,
+        "status": status,
+        "url": url,
+    }
     filedb[uuid] = data
     data["uuid"] = uuid
 
-    emit('update', data)
+    emit("update", data)
+
 
 @app.route("/")
 def index():
     return render_template("index.j2")
+
 
 @app.route("/download/<uuid>")
 def download(uuid):
     filename = "%s.wav" % uuid
     attachment_filename = filedb[uuid]["filename"]
     print(uuid)
-    print(app.config['DOWNLOAD_FOLDER'])
+    print(app.config["DOWNLOAD_FOLDER"])
     print(filename)
-    return send_from_directory(app.config['DOWNLOAD_FOLDER'], filename , as_attachment=True, attachment_filename = attachment_filename )
+    return send_from_directory(
+        app.config["DOWNLOAD_FOLDER"],
+        filename,
+        as_attachment=True,
+        attachment_filename=attachment_filename,
+    )
