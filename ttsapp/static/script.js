@@ -35,7 +35,8 @@ $(document).ready(function() {
         filename = $("#filename").val()
         text = $('#text').val()
         datetime = Date()
-        payload = {"uuid": uuid, "filename": filename, "text": text, "datetime": datetime}
+        ssml = $('#ssml').is(":checked")
+        payload = {"uuid": uuid, "filename": filename, "text": text, "datetime": datetime, "ssml": ssml}
         socket.emit('update', payload)
         $('#log').prepend(`
             <tr id=${uuid}>

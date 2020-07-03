@@ -9,7 +9,7 @@ with open("./instance/azure_speech.key") as file:
     speech_key = file.read().strip()
 
 
-def get_tts(filename, text):
+def get_tts(filename, text, ssml):
     speech_config = speechsdk.SpeechConfig(
         subscription=speech_key, region=service_region
     )
@@ -26,13 +26,13 @@ def get_tts(filename, text):
         speech_config=speech_config, audio_config=audio_output
     )
 
-    # Synthesizes the text to speech.
-    # Replace with your own text.
-    # text = "Hello world!"
-    #result = speech_synthesizer.speak_text_async(text).get()
-    result = speech_synthesizer.speak_ssml_async(text).get()
+    # Synthesizes the text to speech.    
+    if ssml:
+        result = speech_synthesizer.speak_ssml_async(text).get()
+    else:
+        result = speech_synthesizer.speak_text_async(text).get()
 
-    result_dict = {"status": None, "path": None}
+    result_dict = {"status": "", "path": ""}
 
     # Checks result.
     if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
@@ -41,11 +41,11 @@ def get_tts(filename, text):
     elif result.reason == speechsdk.ResultReason.Canceled:
         cancellation_details = result.cancellation_details
         reason = "Speech synthesis canceled: {}".format(cancellation_details.reason)
-        result_dict["status"] = "Speech synthesized"
+        result_dict["status"] = reason
         if cancellation_details.reason == speechsdk.CancellationReason.Error:
             if cancellation_details.error_details:
                 error = "Error details: {}".format(cancellation_details.error_details)
-                result_dict["status"] = "%s %s" % result_dict["status"], error
+                result_dict["status"] = "%s %s" % (reason, error)
 
     print(result_dict)
     return result_dict
