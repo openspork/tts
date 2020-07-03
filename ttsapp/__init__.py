@@ -61,7 +61,6 @@ def update(payload):
     text = payload["text"]
     datetime = payload["datetime"]
     ssml = payload["ssml"]
-    print(ssml)
     result = get_tts(filename="%s.wav" % uuid, text=text, ssml=ssml)
     status = result["status"]
     # path = result["path"]
