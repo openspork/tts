@@ -36,9 +36,11 @@ def get_tts(filename, text, ssml):
 
     # Checks result.
     if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
+        result_dict["error"] = False
         result_dict["status"] = "Speech synthesized"
         result_dict["path"] = audio_path
     elif result.reason == speechsdk.ResultReason.Canceled:
+        result_dict["error"] = True
         cancellation_details = result.cancellation_details
         reason = "Speech synthesis canceled: {}".format(cancellation_details.reason)
         result_dict["status"] = reason

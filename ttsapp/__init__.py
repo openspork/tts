@@ -63,6 +63,7 @@ def update(payload):
     ssml = payload["ssml"]
     result = get_tts(filename="%s.wav" % uuid, text=text, ssml=ssml)
     status = result["status"]
+    error = result ["error"]
     # path = result["path"]
     url = "/download/%s" % uuid
     # construct and store in memory
@@ -72,6 +73,7 @@ def update(payload):
         "datetime": datetime,
         "status": status,
         "url": url,
+        "error": error
     }
     filedb[uuid] = data
     data["uuid"] = uuid
