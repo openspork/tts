@@ -25,7 +25,12 @@ $(document).ready(function() {
     socket.on('update', function(msg) {
         console.log(msg)
         row = $("#"+msg["uuid"]).find(".status").html(`<td class="status">${msg["status"]}</td>`)
-        row = $("#"+msg["uuid"]).find(".download").html(`<td class="download"><a href="${msg["url"]}">Download</a></td>`)
+        if (msg["error"]) {
+            row = $("#"+msg["uuid"]).find(".download").html(`<td class="download">N/A - Error!</td>`)
+        }
+        else {
+            row = $("#"+msg["uuid"]).find(".download").html(`<td class="download"><a href="${msg["url"]}">Download</a></td>`)
+        }
     });
 
 
